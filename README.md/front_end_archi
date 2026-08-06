@@ -1,0 +1,122 @@
+# MISSION : CRÉATION DE L'INTERFACE FRONTEND REACT POUR "NETVISION AGENT"
+
+Tu es un développeur Frontend Senior expert en UI/UX pour applications de cybersécurité. 
+Ta mission est de créer l'interface graphique complète du Dashboard "NetVision Agent" basée exactement sur la maquette visuelle fournie, et connectée au Backend FastAPI via WebSocket et API REST HTTP.
+
+---
+
+## 1. TECH STACK & DÉPENDANCES
+- **Framework :** React (Vite)
+- **Styling :** Tailwind CSS
+- **Icones :** `lucide-react`
+- **Graphe Réseau Interactif :** HTML5 Canvas interactif 2D (ou SVG/D3.js / React Flow)
+- **Communication Backend :** 
+  - WebSocket Native (`ws://127.0.0.1:8000/ws/stream`)
+  - Axios ou Fetch pour l'API REST (`http://127.0.0.1:8000/api/v1`)
+
+---
+
+## 2. THEME VISUEL & PALETTE DE COULEURS (Cybersecurity Dark Mode)
+- **Fond principal :** Bleu nuit très sombre (`#0b0f19` à `#0d111a`)
+- **Bordures & Séparateurs :** Bleu sombre translucide avec effet néon (`#1e293b`, `rgba(0, 242, 254, 0.1)`)
+- **Accents Néon / Statuts :**
+  - **Cyan Néon (Actif / Réseau) :** `#00f2fe`
+  - **Vert (Risque Faible < 30 / Safe) :** `#00e676`
+  - **Orange (Risque Moyen 30-70 / Warning) :** `#ff9900`
+  - **Rouge (Risque Élevé > 70 / Danger) :** `#ff3344`
+  - **Bleu Électrique (Mon PC / Nœud Central) :** `#0066ff`
+- **Typographie :** Polices système modernes (Inter, Roboto, Fira Code pour le texte monospacé / SHA256 / Cmdline).
+
+---
+
+## 3. STRUCTURE ET LAYOUT (GRILLE EN 4 ZONES)
+
+L'application doit respecter exactement la disposition en grille suivante :
+
+┌────────────────────────────────────────────────────────────────────────────────────────────┐
+│ TOP BAR : Logo / Débit Réseau / Connexions / Jauge Risque Global / Horloge & Agent Status  │
+├──────────────┬─────────────────────────────────────────────────────────────┬───────────────┤
+│              │                                                             │ INSPECTEUR    │
+│ SIDEBAR      │ CANVAS DE TOPOLOGIE RÉSEAU (Graphe Radial Interactif)       │ PROCESSUS     │
+│ NAVIGATION   │ Nœud Central (Mon PC) + Sockets distantes                   │ SÉLECTIONNÉ   │
+│ & LÉGENDE    │                                                             │ (Panneau      │
+│              │                                                             │ Latéral Droit)│
+├──────────────┴─────────────────────────────────────────────────────────────┴───────────────┤
+│ BOTTOM BAR : JOURNAL DES ÉVÉNEMENTS (Tableau des alertes SQLite + Filtres + Bouton Clear)  │
+└────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+---
+
+## 4. DÉTAILS COMPOSANT PAR COMPOSANT
+
+### A. BARRE SUPÉRIEURE (TopBar Metrics)
+1. **Logo :** Icône Hexagone/Réseau + Titre `NetVision Agent` + Badge version `v1.0.0`.
+2. **Débit Réseau :**
+   - Envoi (Flèche Haut Vert Néon `↑`) Ex: `1.23 MB/s`
+   - Réception (Flèche Bas Bleu Néon `↓`) Ex: `4.56 MB/s`
+3. **Compteur Connexions :** Total (`42 Connexions`), TCP (`35`), UDP (`7`).
+4. **Jauge Niveau de Menace Global :** Arc de cercle semi-circulaire (0 à 100). Afficher la valeur numérique (Ex: `68 / 100`) et l'état textuel (`ÉLEVÉ` en Rouge, `MOYEN` en Orange, `FAIBLE` en Vert).
+5. **En-tête Droite :** Horloge live `HH:MM:SS`, Date, Icône Engrenage Paramètres, et Badge vert `• Agent actif`.
+
+### B. SIDEBAR GAUCHE (Navigation & Légende)
+1. **Menu de Navigation :**
+   - Items : `Topologie` (Actif par défaut avec icône Réseau), `Tableau de bord`, `Processus`, `Connexions`, `Alertes` (avec badge rouge `7`), `Analyse VT`, `Paramètres`, `Historique`, `Exporter`.
+2. **Bloc Légende (au bas de la sidebar) :**
+   - Pastilles couleur : `• Risque faible (< 30)` [Vert], `• Risque moyen (30 - 70)` [Orange], `• Risque élevé (> 70)` [Rouge].
+   - Lignes de flux : `─── TCP`, `┄┄┄ UDP`, `••• Trafic en temps réel`.
+
+### C. ZONE CENTRALE : CANVAS DE TOPOLOGIE RÉSEAU (Radial Graph)
+1. **Nœud Central :**
+   - Un cercle bleu glowing étiqueté **"Mon PC"** avec l'IP `127.0.0.1` et une icône d'ordinateur.
+2. **Nœuds Satellites (IPs Distantes) :**
+   - Disposés en cercle/ellipse autour du nœud central.
+   - Les cercles extérieurs représentent les IPs distantes (ex: `8.8.8.8`, `185.220.101.5`, `1.1.1.1`, etc.).
+   - La couleur de chaque nœud dépend du `risk_score` de sa connexion (Vert, Orange, Rouge).
+   - Les nœuds suspects (Rouge/Orange) peuvent avoir des liaisons croisées ou des pulsations visuelles.
+3. **Interactivité :** Clic sur un nœud distante = Sélectionne le processus associé et ouvre le panneau d'inspection droit.
+
+### D. PANNEAU DROIT : INSPECTEUR DE PROCESSUS SÉLECTIONNÉ
+S'ouvre lorsqu'une connexion ou un nœud est cliqué.
+1. **En-tête Processus :** Logo de l'application (ex: Chrome), Nom `chrome.exe`, Description `Google Chrome`, Badge vert `• Processus actif`, Bouton Fermer `X`.
+2. **Informations Réseau :** `IP Locale`, `IP Distante`, `Port Distant`, `Protocole` (badge rouge/bleu).
+3. **Détails Système :** `PID`, `Utilisateur`, `Chemin d'accès` complet sur le disque.
+4. **Bloc Sécurité :**
+   - `Empreinte SHA256` (texte monospacé tronqué avec option copier).
+   - `Niveau de risque` : Badge coloré Ex: `ÉLEVÉ (75/100)`.
+   - `Explication` : Texte explicatif des alertes générées par l'analyseur.
+5. **Ligne de commande (Cmdline) :** Boîte de code noire monospacée affichant la commande d'exécution complète.
+6. **Bouton d'Action Critique :** Grand bouton rouge au bas : `🚨 TUER LE PROCESSUS (KILL PID ####)`.
+
+### E. TABLEAU INFÉRIEUR : JOURNAL DES ÉVÉNEMENTS (Log Table)
+1. **Barre d'outils :** Titre `JOURNAL DES ÉVÉNEMENTS`, Filtre Protocole (`Tous`, `TCP`, `UDP`), Filtre Niveau (`Tous`, `ALERT`, `WARN`, `INFO`), Bouton `EFFACER` (Vider la table BDD).
+2. **Colonnes :**
+   - `HEURE` (ex: 21:45:02)
+   - `NIVEAU` (Badges : `ALERT` [Rouge], `WARN` [Orange], `INFO` [Vert/Bleu])
+   - `ÉVÉNEMENT` (Description textuelle de l'alerte)
+   - `PROTOCOLE` (TCP / UDP / DNS)
+   - `SOURCE` (IP:Port local)
+   - `DESTINATION` (IP:Port distant)
+   - `RISK SCORE` (Pill badge avec la note numérique)
+
+---
+
+## 5. INTÉGRATION BACKEND (STATE & SERVICES)
+
+1. **Connexion WebSocket Temps Réel (`useNetworkStream.js`) :**
+   - Se connecter à `ws://127.0.0.1:8000/ws/stream`.
+   - À chaque message reçu (tableau d'objets `NetworkConnection`), mettre à jour :
+     - Les compteurs de la **TopBar** (Nombre de sockets, TCP/UDP).
+     - Le calcul de la **Jauge de Menace Global** (moyenne ou score max des risques).
+     - Le **Canvas de Topologie Réseau** (re-dessiner les nœuds et les lignes).
+
+2. **Appels REST API (`/api/v1`) :**
+   - `GET /api/v1/alerts` : Charger les 50 dernières alertes sauvegardées au démarrage et lors de l'application de filtres dans le tableau inférieur.
+   - `DELETE /api/v1/alerts/clear` : Appelé lors du clic sur le bouton `EFFACER` du tableau de bord.
+   - `GET /api/v1/whitelist` & `POST /api/v1/whitelist` : Pour l'onglet Paramètres.
+
+---
+
+## 6. LIVRABLE ATTENDU
+Génère une structure de composants React propre, modulaire, stylisée avec Tailwind CSS, intégrant le mode sombre cyber-sécurité et l'interactivité complète du réseau.  
+

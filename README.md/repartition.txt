@@ -1,0 +1,71 @@
+NetVision/
+├── .env.example                  # Modèle des variables d'environnement (SANS vrais secrets)
+├── .gitignore                    # Exclusion Git (venv, __pycache__, logs, .env)
+├── README.md                     # Documentation d'installation et de démarrage
+├── backend/                      # SOCLE BACKEND (PYTHON 3.13 / FASTAPI)
+│   ├── app/
+│   │   ├── api/                  # Endpoints REST (FastAPI)
+│   │   │   └── v1/               # Versionnement des API (/api/v1/...)
+│   │   ├── core/                 # Cœur du système (Config, Sécurité, Logging)
+│   │   │   ├── config.py         # [Étape 1] Configuration Pydantic Settings
+│   │   │   └── logging.py        # Centralisation des logs applicatifs
+│   │   ├── database/             # Gestion de la base de données
+│   │   │   └── session.py        # Moteur et sessions SQLAlchemy async
+│   │   ├── models/               # Modèles ORM (Tables de la BDD)
+│   │   ├── schemas/              # Schémas Pydantic (Validation des données)
+│   │   ├── repositories/         # Accès aux données (Repository Pattern)
+│   │   ├── services/             # Logique Métier
+│   │   │   ├── capture/          # Inspection sockets (psutil) et paquets (Scapy)
+│   │   │   ├── analysis/         # Analyse comportementale et détection d'anomalies
+│   │   │   ├── virustotal/       # Connecteur API VirusTotal
+│   │   │   ├── geoip/            # Service de géolocalisation d'IP
+│   │   │   ├── alerts/           # Moteur d'alertes en temps réel
+│   │   │   └── history/          # Historisation des flux
+│   │   ├── websocket/            # Gestionnaire de connexions WebSockets temps réel
+│   │   └── utils/                # Utilitaires réseau et formatage
+│   ├── tests/                    # Suite de tests unitaires et d'intégration (pytest)
+│   ├── requirements.txt          # Dépendances Python strictes
+│   └── main.py                   # Point d'entrée de l'application FastAPI
+│
+└── frontend/                     # SOCLE FRONTEND (SPA HTML/CSS/JS ES6+)
+    ├── css/                      # Styles CSS modulaires
+    │   └── main.css
+    ├── js/                       # Modules JavaScript
+    │   ├── components/           # Composants UI réutilisables
+    │   ├── dashboard/            # Orchestrateur de la vue principale
+    │   ├── graph/                # Visualisation Cytoscape.js
+    │   ├── charts/               # Graphiques Chart.js
+    │   ├── alerts/               # Module de gestion des notifications
+    │   └── services/             # Client WebSocket et appels Fetch REST
+    ├── assets/                   # Icônes et images
+    └── index.html                # Application Single Page (SPA)
+
+
+
+
+    backend/
+├── app/
+│   ├── api/            # Routes HTTP (Endpoints REST)
+│   ├── core/           # Configuration globale & variables d'environnement
+│   ├── models/         # Structure des tables de base de données (SQLAlchemy)
+│   ├── schemas/        # Validation des données entrantes/sortantes (Pydantic)
+│   ├── services/       # Logique métier (traitement des données)
+│   ├── capture/        # Capture des connexions réseau (psutil, scapy)
+│   ├── analysis/       # Analyse des paquets et flux
+│   ├── database/       # Connexion à la base de données
+│   ├── repositories/   # Requêtes SQL abstraites (Pattern Repository)
+│   ├── websocket/      # Gestion de la communication temps réel
+│   ├── virustotal/     # Client d'intégration de l'API VirusTotal
+│   ├── geoip/          # Module de géolocalisation d'adresses IP
+│   ├── alerts/         # Moteur de génération des alertes de sécurité
+│   ├── history/        # Gestion de l'historique des événements
+│   └── utils/          # Fonctions utilitaires réutilisables
+├── tests/              # Tests unitaires et d'intégration
+├── main.py             # Point d'entrée principal pour démarrer l'application
+└── requirements.txt    # Liste des dépendances externes
+
+
+le filtrage des donner json avant le transferer :
+transformation des donnees  d un object sous forma de json
+avec la fonction suivant 
+connection.model_dump_json()

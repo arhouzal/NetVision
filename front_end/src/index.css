@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyber-bg: #0b0f19;
+  --color-cyber-dark: #0d111a;
+  --color-cyber-neon: #00f2fe;
+  --color-cyber-green: #00e676;
+  --color-cyber-orange: #ff9900;
+  --color-cyber-red: #ff3344;
+  --color-cyber-blue: #0066ff;
+  --color-cyber-border: rgba(0, 242, 254, 0.1);
+  
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Global font size scale upgrades for better legibility */
+  --text-xs: 0.875rem; /* 14px instead of 12px */
+  --text-xs--line-height: 1.25rem;
+
+  --text-sm: 1rem; /* 16px instead of 14px */
+  --text-sm--line-height: 1.5rem;
+
+  --text-base: 1.125rem; /* 18px instead of 16px */
+  --text-base--line-height: 1.75rem;
+
+  --text-lg: 1.25rem; /* 20px instead of 18px */
+  --text-lg--line-height: 1.875rem;
+
+  --text-xl: 1.5rem; /* 24px instead of 20px */
+  --text-xl--line-height: 2rem;
+
+  --text-2xl: 1.875rem; /* 30px instead of 24px */
+  --text-2xl--line-height: 2.25rem;
+}
+
+@layer utilities {
+  .glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+  }
+  .glow-green {
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+  }
+  .glow-orange {
+    box-shadow: 0 0 15px rgba(255, 153, 0, 0.4);
+  }
+  .glow-red {
+    box-shadow: 0 0 15px rgba(255, 51, 68, 0.5);
+  }
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.6);
+  }
+  .text-glow-cyan {
+    text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+  }
+  .text-glow-red {
+    text-shadow: 0 0 8px rgba(255, 51, 68, 0.6);
+  }
+}
+
+/* Custom Scrollbar for sleek cyber look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0d111a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00f2fe;
+}
+
+/* Pulsing grid background */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+}
+
+.pulse-glow {
+  animation: pulse-ring 3s infinite ease-in-out;
+}
+
+/* Redefine gray text utilities for higher legibility on dark backgrounds */
+.text-gray-500 {
+  color: #a1a1aa !important; /* zinc-400 equivalent, much easier to read */
+}
+.text-gray-400 {
+  color: #d4d4d8 !important; /* zinc-300 equivalent */
+}
+.text-gray-600 {
+  color: #71717a !important; /* zinc-500 equivalent */
+}
+
