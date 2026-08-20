@@ -964,6 +964,18 @@ function App() {
                         (c.process_path && c.process_path.toLowerCase().includes(query))
                       );
                     })
+                    .reduce((acc, c) => {
+                      const existing = acc.find(process => process.pid === c.pid);
+                      if (!existing) {
+                        acc.push({ ...c, connectionCount: 1 });
+                      } else {
+                        existing.connectionCount += 1;
+                        if ((c.risk_score || 0) > (existing.risk_score || 0)) {
+                          Object.assign(existing, c, { connectionCount: existing.connectionCount });
+                        }
+                      }
+                      return acc;
+                    }, [])
                     .map((c, idx) => (
                       <div 
                         key={idx} 
@@ -980,6 +992,9 @@ function App() {
                             <span className="font-mono text-sm font-semibold text-white">{c.process_name}</span>
                             <span className="text-xs text-gray-400 font-mono block mt-0.5">
                               PID: <span className="text-white font-bold">{c.pid}</span> | Utilisateur: <span className="text-gray-300">{c.username || 'N/A'}</span>
+                              {c.connectionCount > 1 && (
+                                <span className="ml-2 text-cyber-neon">({c.connectionCount} connexions)</span>
+                              )}
                             </span>
                           </div>
                         </div>

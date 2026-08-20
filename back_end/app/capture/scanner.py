@@ -61,10 +61,14 @@ def get_active_connection() -> list[NetworkConnection]:
                     # io_counters() renvoie la quantité de données lues et écrites par le processus
 
                     #Volumetrie
-                    io = proc.io_counters()
-                    bytes_sent = io.write_bytes  # Données envoyées
-                    bytes_recv = io.read_bytes   # Données reçues
+                    try:
+                        io = proc.io_counters()
+                        bytes_sent = io.write_bytes  # Données envoyées
+                        bytes_recv = io.read_bytes   # Données reçues
+                    except (NotImplementedError, psutil.AccessDenied):
+                         pass  # io_counters indisponible pour ce processus sur ce système
 
+                    
                     # ---- APPEL DU MODULE ISOLE POUR LE SHA256
                     proc_hash = get_file_sha256(proc_path)
 
@@ -83,8 +87,8 @@ def get_active_connection() -> list[NetworkConnection]:
                     if cmd_line:
                         cmdline = " ".join(cmd_line)
 
-                except (psutil.NoSuchProcess, psutil.AccessDenied):
-                    proc_name = "Accès Refusé"
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                        proc_name = "Accès Refusé"
 
             # Creation de l Object complet valide qui vat subire la 
             # verification par le pydantic avant d etre envoie :

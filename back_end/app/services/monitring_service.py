@@ -8,6 +8,7 @@ from app.capture.scanner import get_active_connection
 from app.repositories.alert_repository import AlertRepository
 from app.repositories.whitelist_repository import WhitelistRepository
 from app.schemas.connection import NetworkConnection
+from app.database.session import get_connection
 
 
 # =============================================================================
